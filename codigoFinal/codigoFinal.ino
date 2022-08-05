@@ -18,13 +18,14 @@ int tirosB[4][10];
 //int llenado=0;
 int targetA=0;
 int targetB=0;
-int scoreA=0;
-int scoreB=0;
+int scoreA=0;int scoreB=0;
 int cantPartidas = 0;
 
-void setup() {
-  Serial.begin(9600);
 
+void setup() {
+  
+  Serial.begin(9600);
+  
   lcd.setBacklight(HIGH);
   lcd.init();
   lcd.begin(16,2);
@@ -33,6 +34,7 @@ void setup() {
 
 void loop() {
   
+ 
   menu();
 
 }
@@ -58,6 +60,7 @@ void llenarMatriz(int tipo){
         mensaje = "da de barco: ";
         lcd.setCursor(0,1);
         lcd.print(mensaje);  
+
     }else{
         mensaje = "da de misil: ";
         lcd.setCursor(0,1);
@@ -69,7 +72,9 @@ void llenarMatriz(int tipo){
     while(tecla != 'A'&&tecla != 'B'&&tecla != 'C'&&tecla != 'D')
     {
        tecla = teclado.getKey(); //Obtengo el primer caracter del teclado
+      
     }
+
     switch(tecla){
       case 'A': coordenada[0]=0;
               break;
@@ -89,6 +94,7 @@ void llenarMatriz(int tipo){
     {
        tecla = teclado.getKey(); //Obtengo el primer caracter del teclado
     } 
+
     coordenada[1]=atoi(&tecla);
     mensaje += (String)tecla;
     lcd.setCursor(0,1);
@@ -122,10 +128,14 @@ void llenarMatriz(int tipo){
   lcd.print("SE INGRESARON");
   if (tipo==1){
     lcd.setCursor(0,1);
-    lcd.print("LOS 10 BARCOS");    
+    lcd.print("LOS 10 BARCOS");  
+    digitalWrite(11, HIGH);
+              delay(5000);
+              digitalWrite(11, LOW);  
   }else{
     lcd.setCursor(0,1);
-    lcd.print("LOS 10 DISPAROS");    
+    lcd.print("LOS 10 DISPAROS"); 
+ 
   }
 
   delay(1400);
@@ -149,6 +159,7 @@ void limpiarMatriz(int tipo){
 }
 
 void menu(){
+
   while(tmenu==0){
       lcd.setCursor(0,0);
       lcd.print("1.- Comenzar");
@@ -159,6 +170,9 @@ void menu(){
       switch (tecla){
         case '1':limpiarLed();
               delay(500);
+              digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
               limpiarMatriz(1);
               limpiarMatriz(0);
               barcosLlenos = false;
@@ -192,6 +206,11 @@ void menuJuego(){
         switch (tecla){
           case '1':limpiarLed();
                 delay(500);
+                digitalWrite(11, HIGH);
+                delay(1600);
+                digitalWrite(11, LOW);
+                
+                delay(1600);
                 llenarMatriz(1);
                 barcosLlenos = true;
                 break;
@@ -229,6 +248,7 @@ void menuJuego(){
     }
 
     while(tmenu==3){
+      
       lcd.setCursor(0,0);
       lcd.print("4.Ver Disparos");
       lcd.setCursor(0,1);
@@ -250,6 +270,7 @@ void menuJuego(){
     }
     
     while(tmenu==4){
+     
       lcd.setCursor(0,0);
       lcd.print("5.Jugar");
       lcd.setCursor(0,1);
@@ -424,6 +445,7 @@ void limpiarLed(){
 }
 
 void jugar(){
+  
   limpiarLed();
   lcd.setCursor(0,0);
   lcd.print("Recibiendo datos");
@@ -432,6 +454,12 @@ void jugar(){
   targetA=0;
   targetB=0;
   if(!barcosLlenos||!tirosLlenos){
+    digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
+              digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
     lcd.setCursor(0,0);
     lcd.print("Asegurate de");
     lcd.setCursor(0,1);
@@ -443,6 +471,15 @@ void jugar(){
     delay(2500);
     limpiarLed();
   }else{
+    digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
+              digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
+              digitalWrite(11, HIGH);
+              delay(700);
+              digitalWrite(11, LOW);
     int x=0;
     int y=0;
     int cont=0;
