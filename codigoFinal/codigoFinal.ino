@@ -446,13 +446,7 @@ void limpiarLed(){
 
 void jugar(){
   
-  limpiarLed();
-  lcd.setCursor(0,0);
-  lcd.print("Recibiendo datos");
-  lcd.setCursor(0,1);
-  lcd.print("de Jugador B");
-  targetA=0;
-  targetB=0;
+  
   if(!barcosLlenos||!tirosLlenos){
     digitalWrite(11, HIGH);
               delay(700);
@@ -471,6 +465,13 @@ void jugar(){
     delay(2500);
     limpiarLed();
   }else{
+    limpiarLed();
+  lcd.setCursor(0,0);
+  lcd.print("Recibiendo datos");
+  lcd.setCursor(0,1);
+  lcd.print("de Jugador B");
+  targetA=0;
+  targetB=0;
     digitalWrite(11, HIGH);
               delay(700);
               digitalWrite(11, LOW);
