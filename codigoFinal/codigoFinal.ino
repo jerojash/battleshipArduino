@@ -452,23 +452,23 @@ void jugar(){
       letra = Serial.read();
       if (letra=='1'||letra=='2'||letra=='3'||letra=='4'||letra=='5'||letra=='6'||letra=='7'||letra=='8'||letra=='9'||letra=='0'){
         if (cont==0){
-          Serial.println("Recibo coordenada y");
+      //    Serial.println("Recibo coordenada y");
           y=atoi(&letra);
           cont++;
         }else{ //Ya recibi la segunda coordenada, puedo aumentar el contador de coordenadas recibidas
           x=atoi(&letra);
-          Serial.println("Recibo coordenada x");
+      //    Serial.println("Recibo coordenada x");
           cont++;
           cant++;
         }
         if(cont==2){
           cont=0;
           barcosB[x][y]=1;
-          Serial.println("Comparo si di al target");
+        //  Serial.println("Comparo si di al target");
           if(barcosB[x][y]==tirosA[x][y]){ //Signiica que yo le di al jugador de python
             targetA++; 
-            Serial.println("Di al target");
-            Serial.println(targetA);
+      //      Serial.println("Di al target");
+     //       Serial.println(targetA);
           }
         }
       }
@@ -481,23 +481,23 @@ void jugar(){
       letra = Serial.read();
       if (letra=='1'||letra=='2'||letra=='3'||letra=='4'||letra=='5'||letra=='6'||letra=='7'||letra=='8'||letra=='9'||letra=='0'){
         if (cont==0){
-          Serial.println("Recibo coordenada y");
+    //      Serial.println("Recibo coordenada y");
           y=atoi(&letra);
           cont++;
         }else{ //Ya recibi la segunda coordenada, puedo aumentar el contador de coordenadas recibidas
           x=atoi(&letra);
-          Serial.println("Recibo coordenada x");
+    //      Serial.println("Recibo coordenada x");
           cont++;
           cant++;
         }
         if(cont==2){
           cont=0;
           tirosB[x][y]=1;
-          Serial.println("Comparo si dio al target");
+          //Serial.println("Comparo si dio al target");
           if(tirosB[x][y]==barcosA[x][y]){ //Signiica que el jugador python me dio a mi
             targetB++; 
-            Serial.println("Dio al target");
-            Serial.println(targetB);
+        //    Serial.println("Dio al target");
+      //      Serial.println(targetB);
           }
         }
       }
