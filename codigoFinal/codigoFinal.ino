@@ -1,6 +1,6 @@
 #include <Keypad.h>
-#include<LiquidCrystal.h>
-LiquidCrystal lcd(A0,A1,A2,A3,A4,A5);
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27,16,2);
 
 byte f[4]={10,9,8,7};
 byte c[4]={6,5,4,3};
@@ -12,9 +12,13 @@ int barcosA[4][10];
 int barcosB[4][10];
 int tirosA[4][10];
 int tirosB[4][10];
+int llenado=0;
 
 void setup() {
   Serial.begin(9600);
+
+  lcd.setBacklight(HIGH);
+  lcd.init();
   lcd.begin(16,2);
 
 }
@@ -140,13 +144,16 @@ void menu(){
   while(tmenu==0){
       lcd.setCursor(0,0);
       lcd.print("1.- Comenzar");
-      lcd.setCursor(0,2);
+      lcd.setCursor(0,1);
       lcd.print("2.- Salir");
     
       tecla = teclado.getKey();
       switch (tecla){
         case '1':limpiarLed();
               delay(500);
+              limpiarMatriz(1);
+              limpiarMatriz(0);
+              llenado=0;
               tmenu = 1;
               menuJuego();
               break;
@@ -167,7 +174,7 @@ void menuJuego(){
     while(tmenu == 1){
         lcd.setCursor(0,0);
         lcd.print("1.IngresarBarcos");
-        lcd.setCursor(0,2);
+        lcd.setCursor(0,1);
         lcd.print("2.Disparar C.Mas");
         tecla = teclado.getKey();
         switch (tecla){
@@ -230,21 +237,63 @@ void menuJuego(){
     
     while(tmenu==4){
       lcd.setCursor(0,0);
-      lcd.print("5.Salir");
+      lcd.print("5.Jugar");
       lcd.setCursor(0,1);
-      lcd.print("B.Volver");
+      lcd.print("B.Volver   C.Mas");
       tecla = teclado.getKey();
       switch (tecla){
         case '5':limpiarLed();
               delay(500);
-              tmenu=0;
+              //jugar();
               break;
         case 'B': limpiarLed();
               delay(500);
               tmenu=3;
               break;
+        case 'C': limpiarLed();
+                delay(500);
+                tmenu=5;
+                break;
       }
     }
+    while(tmenu==5){
+      lcd.setCursor(0,0);
+      lcd.print("6.Ver puntaje");
+      lcd.setCursor(0,1);
+      lcd.print("B.Volver   C.Mas");
+      tecla = teclado.getKey();
+      switch (tecla){
+        case '6':limpiarLed();
+              delay(500);
+              
+              break;
+        case 'B': limpiarLed();
+              delay(500);
+              tmenu=4;
+              break;
+        case 'C': limpiarLed();
+              delay(500);
+              tmenu=6;
+              break;
+      }
+    }
+    while(tmenu==6){
+      lcd.setCursor(0,0);
+      lcd.print("7.Salir");
+      lcd.setCursor(0,1);
+      lcd.print("B.Volver");
+      tecla = teclado.getKey();
+      switch (tecla){
+        case '7':limpiarLed();
+              delay(500);
+              tmenu=0;
+              break;
+        case 'B': limpiarLed();
+              delay(500);
+              tmenu=5;
+              break;
+      }
+    }  
   }
     
       
