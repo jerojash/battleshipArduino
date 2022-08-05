@@ -163,6 +163,8 @@ void menu(){
               limpiarMatriz(0);
               barcosLlenos = false;
               tirosLlenos = false;
+              scoreA=0;
+              scoreB=0;
               //llenado=0;
               tmenu = 1;
               menuJuego();
@@ -307,10 +309,22 @@ void menuJuego(){
       }
     }  
   }
-    
-      
-  
-  
+  if(scoreA==2){
+    limpiarLed();
+    lcd.setCursor(0,0);
+    lcd.print("HAS GANADO");
+    lcd.setCursor(0,1);
+    lcd.print("FELICIDADES");
+    delay(2600);
+  }
+  if(scoreB==2){
+    limpiarLed();
+    lcd.setCursor(0,0);
+    lcd.print("F HAS PERDIDO :(");
+    lcd.setCursor(0,1);
+    lcd.print("SUERTE LA PROX");
+    delay(2600);
+  }
 }
 
 void imprimirBarcosA(){
@@ -553,4 +567,9 @@ void jugar(){
     delay(2600);
   }
   limpiarLed();
+  limpiarMatriz(1); //Limpio las matrices y los targets para la proxima partida
+  limpiarMatriz(0);
+  barcosLlenos = false;
+  tirosLlenos = false;
+  if(scoreA==2||scoreB==2) tmenu =0; //Ya alguno de los dos gana una partida, me salgo del menu del juego
 }
