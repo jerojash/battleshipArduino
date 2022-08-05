@@ -6,13 +6,21 @@ byte f[4]={10,9,8,7};
 byte c[4]={6,5,4,3};
 char keys[4][4]={{'1','2','3','A'},{'4','5','6','B'},{'7','8','9','C'},{'*','0','#','D'}};
 Keypad teclado = Keypad(makeKeymap(keys),f,c,4,4);
+//Copiar desde aca abajo 
+boolean barcosLlenos = false;
+boolean tirosLlenos = false;
 char tecla=' ';
 int tmenu=0;
 int barcosA[4][10];
 int barcosB[4][10];
 int tirosA[4][10];
 int tirosB[4][10];
-int llenado=0;
+//int llenado=0;
+int targetA=0;
+int targetB=0;
+int scoreA=0;
+int scoreB=0;
+int cantPartidas = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -153,7 +161,9 @@ void menu(){
               delay(500);
               limpiarMatriz(1);
               limpiarMatriz(0);
-              llenado=0;
+              barcosLlenos = false;
+              tirosLlenos = false;
+              //llenado=0;
               tmenu = 1;
               menuJuego();
               break;
@@ -181,10 +191,12 @@ void menuJuego(){
           case '1':limpiarLed();
                 delay(500);
                 llenarMatriz(1);
+                barcosLlenos = true;
                 break;
           case '2': limpiarLed();
                 delay(500);
-                llenarMatriz(0);    
+                llenarMatriz(0);
+                tirosLlenos = true;    
                 break;
           case 'C': limpiarLed();
                 delay(500);
@@ -244,7 +256,7 @@ void menuJuego(){
       switch (tecla){
         case '5':limpiarLed();
               delay(500);
-              //jugar();
+              jugar();
               break;
         case 'B': limpiarLed();
               delay(500);
@@ -397,39 +409,148 @@ void limpiarLed(){
   lcd.print("                 ");
 }
 
-
-
-
-/*
-//ALGORITMO: ENVIA 1, CUANDO RECIBE UN CARACTER VALIDO, POR EL PUERTO SERIAL
-
-
-// C++ code
-//
-
-char flag = '0';
-char letra = ' ';
-void setup()
-{
-  Serial.begin(9600);
-}
-
-void loop()
-{
-  int cont=0;
-  
-  while(cont<20){
-    letra = ' ';
-    flag = '0';
-    while (flag == '0') {
+void jugar(){
+  limpiarLed();
+  lcd.setCursor(0,0);
+  lcd.print("Recibiendo datos");
+  lcd.setCursor(0,1);
+  lcd.print("de Jugador B");
+  targetA=0;
+  targetB=0;
+  if(!barcosLlenos||!tirosLlenos){
+    lcd.setCursor(0,0);
+    lcd.print("Asegurate de");
+    lcd.setCursor(0,1);
+    lcd.print("llenar todas");
+    delay(2500);
+    limpiarLed();
+    lcd.setCursor(0,0);
+    lcd.print("las matrices");
+    delay(2500);
+    limpiarLed();
+  }else{
+    int x=0;
+    int y=0;
+    int cont=0;
+    int cant=0;
+    char letra = ' ';
+    while (cant<10){ //Ciclo para recibir los barcos de Python
       letra = Serial.read();
-        if (letra=='1'||letra=='2'||letra=='3'||letra=='4'||letra=='5'||letra=='6'||letra=='7'||letra=='8'||letra=='9'||letra=='0'||letra=='A'||letra=='B'||letra=='C'||letra=='D'){
-          flag='1';
-            Serial.println(flag);
+      if (letra=='1'||letra=='2'||letra=='3'||letra=='4'||letra=='5'||letra=='6'||letra=='7'||letra=='8'||letra=='9'||letra=='0'){
+        if (cont==0){
+          Serial.println("Recibo coordenada y");
+          y=atoi(&letra);
+          cont++;
+        }else{ //Ya recibi la segunda coordenada, puedo aumentar el contador de coordenadas recibidas
+          x=atoi(&letra);
+          Serial.println("Recibo coordenada x");
+          cont++;
+          cant++;
         }
+        if(cont==2){
+          cont=0;
+          barcosB[x][y]=1;
+          Serial.println("Comparo si di al target");
+          if(barcosB[x][y]==tirosA[x][y]){ //Signiica que yo le di al jugador de python
+            targetA++; 
+            Serial.println("Di al target");
+            Serial.println(targetA);
+          }
+        }
+      }
     }
-    cont++;
+    
+    cant = 0;
+    cont = 0;
+    letra = ' ';
+    while (cant<10){ //Ciclo para recibir los disparos de python
+      letra = Serial.read();
+      if (letra=='1'||letra=='2'||letra=='3'||letra=='4'||letra=='5'||letra=='6'||letra=='7'||letra=='8'||letra=='9'||letra=='0'){
+        if (cont==0){
+          Serial.println("Recibo coordenada y");
+          y=atoi(&letra);
+          cont++;
+        }else{ //Ya recibi la segunda coordenada, puedo aumentar el contador de coordenadas recibidas
+          x=atoi(&letra);
+          Serial.println("Recibo coordenada x");
+          cont++;
+          cant++;
+        }
+        if(cont==2){
+          cont=0;
+          tirosB[x][y]=1;
+          Serial.println("Comparo si dio al target");
+          if(tirosB[x][y]==barcosA[x][y]){ //Signiica que el jugador python me dio a mi
+            targetB++; 
+            Serial.println("Dio al target");
+            Serial.println(targetB);
+          }
+        }
+      }
+    }
+      Serial.println((String)targetB+(String)targetA);
+      limpiarLed(); //Muestro los resultados
+      lcd.setCursor(0,0);
+      lcd.print("Enviando ");
+      lcd.setCursor(0,1);
+      lcd.print("resultados");
+      delay(2600);
+      limpiarLed();
+      lcd.setCursor(0,0);
+      lcd.print("a");
+      lcd.setCursor(0,1);
+      lcd.print("Jugador B");
+      delay(2600);
+      limpiarLed();
+    
+    if (targetB>targetA){ //Comparaciones para saber quien gana la partida jugada
+      lcd.setCursor(0,0);
+      lcd.print("La partida");
+      lcd.setCursor(0,1);
+      lcd.print("la gano:");
+      delay(2600);
+      limpiarLed();
+      lcd.setCursor(0,0);
+      lcd.print("Mr Python");
+      lcd.setCursor(0,1);
+      lcd.print("Jugador B");
+      delay(2600);
+      scoreB++;
+    }else if(targetB<targetA){
+      lcd.setCursor(0,0);
+      lcd.print("La partida");
+      lcd.setCursor(0,1);
+      lcd.print("la gano:");
+      delay(2600);
+      limpiarLed();
+      lcd.setCursor(0,0);
+      lcd.print("Mr Arduino");
+      lcd.setCursor(0,1);
+      lcd.print("Jugador A");
+      delay(2600);
+      scoreA++;
+    }else if (targetA=targetB){
+      limpiarLed();
+      lcd.setCursor(0,0);
+      lcd.print("La partida fue");
+      lcd.setCursor(0,1);
+      lcd.print("un empate");
+      delay(2600);
+    }
+    limpiarLed();
+    lcd.setCursor(0,0);
+    lcd.print("MostrandoPuntaje");
+    lcd.setCursor(0,1);
+    lcd.print("de la partida");
+    delay(3500);
+    limpiarLed();
+    lcd.setCursor(0,0);
+    targetA=targetA*100;
+    targetB=targetB*100;
+    lcd.print("Jugador A: "+(String)targetA);
+    lcd.setCursor(0,1);
+    lcd.print("Jugador B: "+(String)targetB);
+    delay(2600);
   }
+  limpiarLed();
 }
-
-*/
